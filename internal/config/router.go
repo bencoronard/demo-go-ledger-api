@@ -1,26 +1,27 @@
 package config
 
 import (
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/bencoronard/demo-go-crud-api/internal/resource"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-func NewRouter() *chi.Mux {
-	r := chi.NewRouter()
+func NewRouter(h *resource.ResourceHandler) *echo.Echo {
+	r := echo.New()
 	registerMiddlewares(r)
-	registerRoutes(r)
+	registerRoutes(r, h)
 	return r
 }
 
-func registerMiddlewares(r *chi.Mux) {
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+func registerMiddlewares(r *echo.Echo) {
+	r.Use(middleware.RequestLogger())
+	r.Use(middleware.Recover())
 }
 
-func registerRoutes(r *chi.Mux) {
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, world!\n"))
-	})
+func registerRoutes(r *echo.Echo, h *resource.ResourceHandler) {
+	r.GET("/", h.ListResources)
+	r.GET("/", h.RetrieveResource)
+	r.POST("/", h.CreateResource)
+	r.PUT("/", h.UpdateResource)
+	r.DELETE("/", h.DeleteResource)
 }

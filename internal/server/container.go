@@ -7,7 +7,8 @@ import (
 	"os"
 
 	"github.com/bencoronard/demo-go-crud-api/internal/config"
-	"github.com/go-chi/chi/v5"
+	"github.com/bencoronard/demo-go-crud-api/internal/resource"
+	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -15,9 +16,13 @@ import (
 func Start() {
 	fx.New(
 		fx.Provide(
-			config.NewLogger,
-			config.NewRouter,
 			config.ReadProperties,
+			config.NewLogger,
+			config.NewDB,
+			resource.NewResourceRepoImpl,
+			resource.NewResourceServiceImpl,
+			resource.NewResourceHandler,
+			config.NewRouter,
 		),
 		fx.Decorate(),
 		fx.Invoke(
@@ -26,17 +31,12 @@ func Start() {
 	).Run()
 }
 
-func startServer(lc fx.Lifecycle, r *chi.Mux, logger *zap.Logger, props *config.AppProps) {
-	srv := &http.Server{
-		Addr:    ":8080",
-		Handler: r,
-	}
-
+func startServer(lc fx.Lifecycle, r *echo.Echo, logger *zap.Logger, props *config.Properties) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			logger.Info(fmt.Sprintf("Process ID: %d on %s", os.Getpid(), props.Host))
+			logger.Info(fmt.Sprintf("Process ID: %d on %s", os.Getpid(), props.Env.Host))
 			go func() {
-				if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				if err := r.Start(":8080"); err != nil && err != http.ErrServerClosed {
 					logger.Error("HTTP server failed to start", zap.Error(err))
 				}
 			}()
@@ -44,7 +44,7 @@ func startServer(lc fx.Lifecycle, r *chi.Mux, logger *zap.Logger, props *config.
 		},
 		OnStop: func(ctx context.Context) error {
 			logger.Info("Shutting down HTTP server...")
-			return srv.Shutdown(ctx)
+			return r.Shutdown(ctx)
 		},
 	})
 }
