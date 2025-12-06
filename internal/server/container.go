@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/bencoronard/demo-go-crud-api/internal/config"
+	"github.com/bencoronard/demo-go-crud-api/internal/resource"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -15,9 +16,13 @@ import (
 func Start() {
 	fx.New(
 		fx.Provide(
-			config.NewLogger,
-			config.NewRouter,
 			config.ReadProperties,
+			config.NewLogger,
+			config.NewDB,
+			resource.NewResourceRepoImpl,
+			resource.NewResourceServiceImpl,
+			resource.NewResourceHandler,
+			config.NewRouter,
 		),
 		fx.Decorate(),
 		fx.Invoke(

@@ -4,37 +4,40 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/bencoronard/demo-go-crud-api/pkg"
+	"github.com/bencoronard/demo-go-common-libs/dto"
 )
 
-type ResourceRepository interface {
-	FindAll(ctx context.Context, p pkg.Pageable) (*pkg.Slice[*Resource], error)
-	FindById(ctx context.Context, id int64) (*Resource, error)
-	Save(ctx context.Context, ent *Resource) (*Resource, error)
-	Delete(ctx context.Context, ent *Resource) error
+type resourceRepo interface {
+	findAll(ctx context.Context, p dto.Pageable, createdBy int64) (*dto.Slice[*resource], error)
+	findById(ctx context.Context, id int64, createdBy int64) (*resource, error)
+	save(ctx context.Context, ent *resource) (*resource, error)
+	delete(ctx context.Context, ent *resource) error
 }
 
-type ResourceRepositoryImpl struct {
+type resourceRepoImpl struct {
 	db *sql.DB
 }
 
-func NewResourceRepositoryImpl(db *sql.DB) ResourceRepository {
-	return &ResourceRepositoryImpl{db: db}
+func NewResourceRepoImpl(db *sql.DB) resourceRepo {
+	return &resourceRepoImpl{db: db}
 }
 
-func (r *ResourceRepositoryImpl) FindAll(ctx context.Context, p pkg.Pageable) (*pkg.Slice[*Resource], error) {
-	var s pkg.Slice[*Resource]
-	return &s, nil
+// delete implements resourceRepo.
+func (r *resourceRepoImpl) delete(ctx context.Context, ent *resource) error {
+	panic("unimplemented")
 }
 
-func (r *ResourceRepositoryImpl) FindById(ctx context.Context, id int64) (*Resource, error) {
-	return nil, nil
+// findAll implements resourceRepo.
+func (r *resourceRepoImpl) findAll(ctx context.Context, p dto.Pageable, createdBy int64) (*dto.Slice[*resource], error) {
+	panic("unimplemented")
 }
 
-func (r *ResourceRepositoryImpl) Save(ctx context.Context, ent *Resource) (*Resource, error) {
-	return nil, nil
+// findById implements resourceRepo.
+func (r *resourceRepoImpl) findById(ctx context.Context, id int64, createdBy int64) (*resource, error) {
+	panic("unimplemented")
 }
 
-func (r *ResourceRepositoryImpl) Delete(ctx context.Context, ent *Resource) error {
-	return nil
+// save implements resourceRepo.
+func (r *resourceRepoImpl) save(ctx context.Context, ent *resource) (*resource, error) {
+	panic("unimplemented")
 }

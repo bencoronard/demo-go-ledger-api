@@ -6,10 +6,10 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func NewRouter() *chi.Mux {
+func NewRouter(h *resource.ResourceHandler) *chi.Mux {
 	r := chi.NewRouter()
 	registerMiddlewares(r)
-	registerRoutes(r)
+	registerRoutes(r, h)
 	return r
 }
 
@@ -18,6 +18,10 @@ func registerMiddlewares(r *chi.Mux) {
 	r.Use(middleware.Recoverer)
 }
 
-func registerRoutes(r *chi.Mux) {
-	r.Get("/", resource.GetResource)
+func registerRoutes(r *chi.Mux, h *resource.ResourceHandler) {
+	r.Get("/", h.ListResources)
+	r.Get("/", h.RetrieveResource)
+	r.Post("/", h.CreateResource)
+	r.Put("/", h.UpdateResource)
+	r.Delete("/", h.DeleteResource)
 }
