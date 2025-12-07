@@ -1,6 +1,6 @@
 module github.com/bencoronard/demo-go-crud-api
 
-go 1.24.10
+go 1.25.4
 
 require (
 	github.com/bencoronard/demo-go-common-libs v0.0.0-20251206053116-ef283726e70f
