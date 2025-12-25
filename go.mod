@@ -5,6 +5,7 @@ go 1.25
 replace github.com/bencoronard/demo-go-common-libs => ../demo-go-common-libs
 
 require (
+	github.com/bencoronard/demo-go-common-libs v0.0.0-20251224061638-94c61e3f7cc4
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/labstack/echo/v4 v4.14.0
 	github.com/spf13/viper v1.21.0
@@ -15,6 +16,7 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
