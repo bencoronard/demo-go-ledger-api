@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func ReadProperties() (*Properties, error) {
+func NewProperties() (*Properties, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 

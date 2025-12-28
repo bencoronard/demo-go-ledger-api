@@ -16,7 +16,7 @@ import (
 func Start() {
 	fx.New(
 		fx.Provide(
-			config.ReadProperties,
+			config.NewProperties,
 			config.NewLogger,
 			config.NewDB,
 			config.NewJwtVerifier,
