@@ -26,7 +26,6 @@ func Start() {
 			resource.NewResourceHandler,
 			config.NewRouter,
 		),
-		fx.Decorate(),
 		fx.Invoke(
 			startServer,
 		),
