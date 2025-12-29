@@ -2,9 +2,9 @@ package resource
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/bencoronard/demo-go-common-libs/dto"
+	"gorm.io/gorm"
 )
 
 type resourceRepo interface {
@@ -15,10 +15,10 @@ type resourceRepo interface {
 }
 
 type resourceRepoImpl struct {
-	db *sql.DB
+	db *gorm.DB
 }
 
-func NewResourceRepoImpl(db *sql.DB) resourceRepo {
+func NewResourceRepoImpl(db *gorm.DB) resourceRepo {
 	return &resourceRepoImpl{db: db}
 }
 

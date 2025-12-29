@@ -108,9 +108,9 @@ type CPCfg struct {
 }
 
 type DBCfg struct {
-	Host   string `env:"PG_HOST"`
-	Port   int    `env:"PG_PORT"`
-	DBName string `env:"PG_DBNAME"`
-	User   string `env:"PG_USER"`
-	Pass   string `env:"PG_PASS"`
+	Host string `env:"PG_HOST"`
+	Port int    `env:"PG_PORT"`
+	Name string `env:"PG_DBNAME"`
+	User string `env:"PG_USER"`
+	Pass string `env:"PG_PASS"`
 }
