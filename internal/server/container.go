@@ -33,19 +33,19 @@ func Start() {
 	).Run()
 }
 
-func startServer(lc fx.Lifecycle, r *echo.Echo, logger *zap.Logger, props *config.Properties) {
+func startServer(lc fx.Lifecycle, r *echo.Echo, log *zap.Logger, props *config.Properties) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			logger.Info(fmt.Sprintf("Process ID: %d on %s", os.Getpid(), props.Env.App.Environment))
+			log.Info(fmt.Sprintf("Process ID: %d on %s", os.Getpid(), props.Env.App.Environment))
 			go func() {
 				if err := r.Start(fmt.Sprintf(":%d", props.Env.App.ListenPort)); err != nil && err != http.ErrServerClosed {
-					logger.Error("HTTP server failed to start", zap.Error(err))
+					log.Error("HTTP server failed to start", zap.Error(err))
 				}
 			}()
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			logger.Info("Shutting down HTTP server...")
+			log.Info("Shutting down HTTP server...")
 			return r.Shutdown(ctx)
 		},
 	})
