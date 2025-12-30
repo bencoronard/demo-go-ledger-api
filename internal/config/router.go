@@ -2,6 +2,8 @@ package config
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 
 	"github.com/bencoronard/demo-go-crud-api/internal/resource"
 	"github.com/labstack/echo/v4"
@@ -9,27 +11,34 @@ import (
 	"go.uber.org/fx"
 )
 
-func NewRouter(lc fx.Lifecycle) *echo.Echo {
+func NewRouter(lc fx.Lifecycle, h *resource.ResourceHandler, p *Properties) *http.Server {
 	e := echo.New()
+	registerMiddlewares(e)
+	registerRoutes(e, h)
+
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", p.Env.App.ListenPort),
+		Handler: e,
+	}
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			return e.Shutdown(ctx)
+			return srv.Shutdown(ctx)
 		},
 	})
 
-	return e
+	return srv
 }
 
-func RegisterMiddlewares(e *echo.Echo) {
+func registerMiddlewares(e *echo.Echo) {
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 }
 
-func RegisterRoutes(e *echo.Echo, h *resource.ResourceHandler) {
+func registerRoutes(e *echo.Echo, h *resource.ResourceHandler) {
 	e.GET("/", h.ListResources)
 	e.GET("/", h.RetrieveResource)
 	e.POST("/", h.CreateResource)

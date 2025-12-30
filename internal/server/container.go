@@ -2,14 +2,12 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/bencoronard/demo-go-crud-api/internal/config"
 	"github.com/bencoronard/demo-go-crud-api/internal/resource"
-	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 )
 
@@ -29,21 +27,18 @@ func Start() {
 		),
 		fx.Invoke(
 			config.ConfigureLogger,
-			config.RegisterMiddlewares,
-			config.RegisterRoutes,
 		),
 		fx.Invoke(start),
 	).Run()
 }
 
-func start(lc fx.Lifecycle, sd fx.Shutdowner, e *echo.Echo, p *config.Properties) {
+func start(lc fx.Lifecycle, sd fx.Shutdowner, srv *http.Server) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-
 			errChan := make(chan error, 1)
 
 			go func() {
-				if err := e.Start(fmt.Sprintf(":%d", p.Env.App.ListenPort)); err != nil && err != http.ErrServerClosed {
+				if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 					errChan <- err
 				}
 			}()
