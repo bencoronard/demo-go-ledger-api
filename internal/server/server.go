@@ -13,16 +13,18 @@ func Start() {
 			config.NewDB,
 			config.NewJwtVerifier,
 			config.NewAuthHeaderResolver,
+			config.NewRouter,
+		),
+		fx.Provide(
 			resource.NewResourceRepo,
 			resource.NewResourceService,
 			resource.NewResourceHandler,
-			config.NewRouter,
 		),
 		fx.Invoke(
 			config.ConfigureLogger,
 			config.RegisterMiddlewares,
 			config.RegisterRoutes,
-			config.Start,
 		),
+		fx.Invoke(config.Start),
 	).Run()
 }
