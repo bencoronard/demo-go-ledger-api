@@ -18,7 +18,7 @@ type resourceRepoImpl struct {
 	db *gorm.DB
 }
 
-func NewResourceRepoImpl(db *gorm.DB) resourceRepo {
+func NewResourceRepo(db *gorm.DB) resourceRepo {
 	return &resourceRepoImpl{db: db}
 }
 

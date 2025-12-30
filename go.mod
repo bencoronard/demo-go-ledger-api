@@ -10,8 +10,6 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/labstack/echo/v4 v4.14.0
 	go.uber.org/fx v1.24.0
-	go.uber.org/zap v1.27.1
-	go.uber.org/zap/exp v0.3.0
 )
 
 require (
@@ -21,6 +19,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	go.uber.org/zap v1.27.1 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 )
 

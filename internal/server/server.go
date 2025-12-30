@@ -14,10 +14,11 @@ func Start() {
 			config.NewDB,
 			config.NewJwtVerifier,
 			config.NewAuthHeaderResolver,
-			resource.NewResourceRepoImpl,
-			resource.NewResourceServiceImpl,
+			resource.NewResourceRepo,
+			resource.NewResourceService,
 			resource.NewResourceHandler,
 			config.NewRouter,
+			config.NewContainer,
 		),
 		fx.Invoke(
 			config.Container.Start,

@@ -20,7 +20,7 @@ type resourceServiceImpl struct {
 	r resourceRepo
 }
 
-func NewResourceServiceImpl(r resourceRepo) resourceService {
+func NewResourceService(r resourceRepo) resourceService {
 	return &resourceServiceImpl{r: r}
 }
 
