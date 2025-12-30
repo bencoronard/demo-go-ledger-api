@@ -6,22 +6,19 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func NewRouter(h *resource.ResourceHandler) *echo.Echo {
-	r := echo.New()
-	r.HideBanner = true
-	r.HidePort = true
-	return r
+func NewRouter() *echo.Echo {
+	return echo.New()
 }
 
-func RegisterMiddlewares(r *echo.Echo) {
-	r.Use(middleware.RequestLogger())
-	r.Use(middleware.Recover())
+func RegisterMiddlewares(e *echo.Echo) {
+	e.Use(middleware.RequestLogger())
+	e.Use(middleware.Recover())
 }
 
-func RegisterRoutes(r *echo.Echo, h *resource.ResourceHandler) {
-	r.GET("/", h.ListResources)
-	r.GET("/", h.RetrieveResource)
-	r.POST("/", h.CreateResource)
-	r.PUT("/", h.UpdateResource)
-	r.DELETE("/", h.DeleteResource)
+func RegisterRoutes(e *echo.Echo, h *resource.ResourceHandler) {
+	e.GET("/", h.ListResources)
+	e.GET("/", h.RetrieveResource)
+	e.POST("/", h.CreateResource)
+	e.PUT("/", h.UpdateResource)
+	e.DELETE("/", h.DeleteResource)
 }
