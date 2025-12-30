@@ -21,6 +21,8 @@ func Start() {
 			config.NewContainer,
 		),
 		fx.Invoke(
+			config.RegisterMiddlewares,
+			config.RegisterRoutes,
 			config.Container.Start,
 		),
 	).Run()

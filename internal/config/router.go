@@ -8,17 +8,17 @@ import (
 
 func NewRouter(h *resource.ResourceHandler) *echo.Echo {
 	r := echo.New()
-	registerMiddlewares(r)
-	registerRoutes(r, h)
+	r.HideBanner = true
+	r.HidePort = true
 	return r
 }
 
-func registerMiddlewares(r *echo.Echo) {
+func RegisterMiddlewares(r *echo.Echo) {
 	r.Use(middleware.RequestLogger())
 	r.Use(middleware.Recover())
 }
 
-func registerRoutes(r *echo.Echo, h *resource.ResourceHandler) {
+func RegisterRoutes(r *echo.Echo, h *resource.ResourceHandler) {
 	r.GET("/", h.ListResources)
 	r.GET("/", h.RetrieveResource)
 	r.POST("/", h.CreateResource)
