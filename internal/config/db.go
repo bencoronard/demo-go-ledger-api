@@ -29,18 +29,15 @@ func NewDB(lc fx.Lifecycle, props *Properties) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := sqlDB.PingContext(ctx); err != nil {
-		return nil, err
-	}
-
 	sqlDB.SetMaxOpenConns(props.Env.CP.ConnectionPoolCap)
 	sqlDB.SetMaxIdleConns(props.Env.CP.ConnectionPoolIdleMin)
 	sqlDB.SetConnMaxLifetime(time.Duration(props.Env.CP.ConnectionTTL) * time.Millisecond)
 	sqlDB.SetConnMaxIdleTime(time.Duration(props.Env.CP.ConnectionPoolIdleTimeout) * time.Millisecond)
 
 	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			return sqlDB.PingContext(ctx)
+		},
 		OnStop: func(ctx context.Context) error {
 			return sqlDB.Close()
 		},
