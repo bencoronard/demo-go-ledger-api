@@ -24,6 +24,6 @@ func main() {
 		fx.Invoke(
 			config.ConfigureLogger,
 		),
-		fx.Invoke(config.Container.Start),
+		fx.Invoke(config.Start),
 	).Run()
 }

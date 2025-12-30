@@ -10,7 +10,6 @@ import (
 )
 
 type Container interface {
-	Start(lc fx.Lifecycle, sd fx.Shutdowner)
 	Run() error
 }
 
@@ -22,7 +21,7 @@ func NewContainer(h *http.Server) Container {
 	return &container{srv: h}
 }
 
-func (c *container) Start(lc fx.Lifecycle, sd fx.Shutdowner) {
+func Start(lc fx.Lifecycle, sd fx.Shutdowner, c Container) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			errChan := make(chan error, 1)
