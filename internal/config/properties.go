@@ -1,7 +1,12 @@
 package config
 
 import (
+	"fmt"
+	"log/slog"
+
 	"github.com/caarlos0/env/v11"
+	vault "github.com/hashicorp/vault/api"
+	"github.com/mitchellh/mapstructure"
 	"go.uber.org/fx"
 )
 
@@ -28,9 +33,32 @@ func NewProperties(lc fx.Lifecycle) (*Properties, error) {
 		return nil, err
 	}
 
-	if err := env.Parse(&props.Secret); err != nil {
+	cfg := vault.DefaultConfig()
+	cfg.Address = props.Env.Vault.URI
+
+	client, err := vault.NewClient(cfg)
+	if err != nil {
 		return nil, err
 	}
+	client.SetToken(props.Env.Vault.Token)
+
+	secretPath := "secret/application/dev"
+	// secretPath := fmt.Sprintf("secret/application/%s", props.Env.App.Environment)
+	secret, err := client.Logical().Read(secretPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if secret == nil || secret.Data == nil {
+		return nil, fmt.Errorf("no secrets found at path: %s", secretPath)
+	}
+
+	err = mapstructure.Decode(secret.Data, &props.Secret.DB)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode vault data: %w", err)
+	}
+
+	slog.Info(fmt.Sprintf("From Vault: %v", props.Secret))
 
 	return &props, nil
 }
@@ -63,9 +91,9 @@ type CPCfg struct {
 }
 
 type DBCfg struct {
-	Host string `env:"PG_HOST"`
-	Port int    `env:"PG_PORT"`
-	Name string `env:"PG_DBNAME"`
-	User string `env:"PG_USER"`
-	Pass string `env:"PG_PASS"`
+	Host string `mapstructure:"pg.host"`
+	Port string `mapstructure:"pg.port"`
+	Name string `mapstructure:"pg.dbname"`
+	User string `mapstructure:"pg.user"`
+	Pass string `mapstructure:"pg.pass"`
 }
