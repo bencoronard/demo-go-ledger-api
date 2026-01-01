@@ -15,7 +15,6 @@ func main() {
 			config.NewJwtVerifier,
 			config.NewAuthHeaderResolver,
 			config.NewRouter,
-			config.NewContainer,
 		),
 		fx.Provide(
 			resource.NewResourceRepo,
@@ -24,7 +23,9 @@ func main() {
 		),
 		fx.Invoke(
 			config.ConfigureLogger,
+			http.Router.RegisterMiddlewares,
+			http.Router.RegisterRoutes,
 		),
-		fx.Invoke(http.InitContainer),
+		fx.Invoke(http.Start),
 	).Run()
 }
