@@ -11,7 +11,7 @@ import (
 )
 
 func NewDB(lc fx.Lifecycle, p *Properties) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Bangkok",
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		p.Secret.DB.Host,
 		p.Secret.DB.Port,
 		p.Secret.DB.User,
