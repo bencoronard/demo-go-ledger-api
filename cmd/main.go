@@ -10,10 +10,7 @@ import (
 func main() {
 	fx.New(
 		fx.Provide(
-			config.NewEnvCfg,
-			config.NewSecretCfg,
 			config.NewProperties,
-			config.NewVaultClient,
 			config.NewDB,
 			config.NewJwtVerifier,
 			config.NewAuthHeaderResolver,
