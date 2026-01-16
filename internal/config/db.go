@@ -19,7 +19,7 @@ func NewDB(lc fx.Lifecycle, p *Properties) (*gorm.DB, error) {
 		p.Secret.DB.Name,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{SkipDefaultTransaction: true})
 	if err != nil {
 		return nil, err
 	}
