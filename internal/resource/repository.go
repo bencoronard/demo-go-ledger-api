@@ -8,8 +8,8 @@ import (
 )
 
 type resourceRepo interface {
-	findAll(ctx context.Context, page dto.Pageable, createdBy int64) (dto.Slice[resource], error)
-	findById(ctx context.Context, id int64, createdBy int64) (*resource, error)
+	findAll(ctx context.Context, page dto.Pageable, createdBy uint) (dto.Slice[resource], error)
+	findById(ctx context.Context, id uint, createdBy uint) (*resource, error)
 	save(ctx context.Context, ent *resource) (*resource, error)
 	delete(ctx context.Context, ent *resource) error
 }
@@ -22,11 +22,11 @@ func NewResourceRepo(db *gorm.DB) resourceRepo {
 	return &resourceRepoImpl{db: db}
 }
 
-func (r *resourceRepoImpl) findAll(ctx context.Context, page dto.Pageable, createdBy int64) (dto.Slice[resource], error) {
+func (r *resourceRepoImpl) findAll(ctx context.Context, page dto.Pageable, createdBy uint) (dto.Slice[resource], error) {
 	return dto.Slice[resource]{}, nil
 }
 
-func (r *resourceRepoImpl) findById(ctx context.Context, id int64, createdBy int64) (*resource, error) {
+func (r *resourceRepoImpl) findById(ctx context.Context, id uint, createdBy uint) (*resource, error) {
 	return &resource{}, nil
 }
 

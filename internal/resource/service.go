@@ -10,10 +10,10 @@ import (
 
 type resourceService interface {
 	listResources(ctx context.Context, page dto.Pageable, claims jwt.MapClaims) (dto.Slice[resource], error)
-	retrieveResource(ctx context.Context, id int64, claims jwt.MapClaims) (*resource, error)
-	createResource(ctx context.Context, dto *resource, claims jwt.MapClaims) (int64, error)
+	retrieveResource(ctx context.Context, id uint, claims jwt.MapClaims) (*resource, error)
+	createResource(ctx context.Context, dto *resource, claims jwt.MapClaims) (uint, error)
 	updateResource(ctx context.Context, dto *resource, claims jwt.MapClaims) error
-	deleteResource(ctx context.Context, id int64, claims jwt.MapClaims) error
+	deleteResource(ctx context.Context, id uint, claims jwt.MapClaims) error
 }
 
 type resourceServiceImpl struct {
@@ -31,12 +31,12 @@ func (s *resourceServiceImpl) listResources(ctx context.Context, page dto.Pageab
 		return dto.Slice[resource]{}, err
 	}
 
-	createdBy, err := strconv.ParseInt(sub, 10, 64)
+	createdBy, err := strconv.ParseUint(sub, 10, strconv.IntSize)
 	if err != nil {
 		return dto.Slice[resource]{}, err
 	}
 
-	ents, err := s.r.findAll(ctx, page, createdBy)
+	ents, err := s.r.findAll(ctx, page, uint(createdBy))
 	if err != nil {
 		return dto.Slice[resource]{}, err
 	}
@@ -45,17 +45,17 @@ func (s *resourceServiceImpl) listResources(ctx context.Context, page dto.Pageab
 }
 
 // createResource implements [resourceService].
-func (s *resourceServiceImpl) createResource(ctx context.Context, dto *resource, claims jwt.MapClaims) (int64, error) {
+func (s *resourceServiceImpl) createResource(ctx context.Context, dto *resource, claims jwt.MapClaims) (uint, error) {
 	panic("unimplemented")
 }
 
 // deleteResource implements [resourceService].
-func (s *resourceServiceImpl) deleteResource(ctx context.Context, id int64, claims jwt.MapClaims) error {
+func (s *resourceServiceImpl) deleteResource(ctx context.Context, id uint, claims jwt.MapClaims) error {
 	panic("unimplemented")
 }
 
 // retrieveResource implements [resourceService].
-func (s *resourceServiceImpl) retrieveResource(ctx context.Context, id int64, claims jwt.MapClaims) (*resource, error) {
+func (s *resourceServiceImpl) retrieveResource(ctx context.Context, id uint, claims jwt.MapClaims) (*resource, error) {
 	panic("unimplemented")
 }
 

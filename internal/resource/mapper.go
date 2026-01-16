@@ -1,21 +1,25 @@
 package resource
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/plugin/optimisticlock"
+)
 
 func toDTO(r resource) resourceDTO {
 	return resourceDTO{
 		ID:           r.ID,
-		Version:      r.Version,
+		Version:      int(r.Version.Int64),
 		TextField:    r.TextField,
 		NumberField:  r.NumberField,
 		BooleanField: r.BooleanField,
 	}
 }
 
-func toEntity(dto resourceDTO, createdBy int64, createdAt, lastUpdated time.Time) resource {
+func toEntity(dto resourceDTO, createdBy uint, createdAt, lastUpdated time.Time) resource {
 	return resource{
 		ID:           dto.ID,
-		Version:      dto.Version,
+		Version:      optimisticlock.Version{Int64: int64(dto.Version), Valid: true},
 		CreatedBy:    createdBy,
 		CreatedAt:    createdAt,
 		LastUpdated:  lastUpdated,
