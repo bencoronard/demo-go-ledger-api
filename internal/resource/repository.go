@@ -53,9 +53,22 @@ func (r *resourceRepoImpl) findByIdAndCreatedBy(ctx context.Context, id uint, cr
 }
 
 func (r *resourceRepoImpl) save(ctx context.Context, ent *resource) (*resource, error) {
-	return nil, nil
+	if ent.ID == 0 {
+		return ent, gorm.G[resource](r.db).Create(ctx, ent)
+	}
+
+	rowsAffected, err := gorm.G[resource](r.db).Where("id = ?", ent.ID).Select("*").Updates(ctx, *ent)
+	if err != nil {
+		return nil, err
+	}
+	if rowsAffected == 0 {
+		return nil, ErrOptimisticLockFailure
+	}
+
+	return ent, nil
 }
 
 func (r *resourceRepoImpl) delete(ctx context.Context, ent *resource) error {
-	return nil
+	_, err := gorm.G[resource](r.db).Where("id = ?", ent.ID).Delete(ctx)
+	return err
 }
