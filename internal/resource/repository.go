@@ -47,7 +47,7 @@ func (r *resourceRepoImpl) findAllByCreatedBy(ctx context.Context, tx *gorm.DB, 
 		return dto.Slice[resource]{}, err
 	}
 
-	return *dto.NewSlice(ents, &page, len(ents)), nil
+	return dto.NewSlice(ents, page, len(ents)), nil
 }
 
 func (r *resourceRepoImpl) save(ctx context.Context, tx *gorm.DB, ent *resource) error {
