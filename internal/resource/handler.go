@@ -67,7 +67,7 @@ func (h *ResourceHandler) UpdateResource(c echo.Context) error {
 		return err
 	}
 
-	if err := h.s.updateResource(c.Request().Context(), nil, claims); err != nil {
+	if err := h.s.updateResource(c.Request().Context(), 0, nil, claims); err != nil {
 		return err
 	}
 

@@ -10,22 +10,32 @@ import (
 )
 
 type resourceRepo interface {
-	findAllByCreatedBy(ctx context.Context, page dto.Pageable, createdBy uint) (dto.Slice[resource], error)
-	findByIdAndCreatedBy(ctx context.Context, id uint, createdBy uint) (*resource, error)
-	save(ctx context.Context, ent *resource) (*resource, error)
-	delete(ctx context.Context, ent *resource) error
+	findAllByCreatedBy(ctx context.Context, tx *gorm.DB, page dto.Pageable, createdBy uint) (dto.Slice[resource], error)
+	findByIdAndCreatedBy(ctx context.Context, tx *gorm.DB, id uint, createdBy uint) (*resource, error)
+	save(ctx context.Context, tx *gorm.DB, ent *resource) error
+	delete(ctx context.Context, tx *gorm.DB, ent *resource) error
 }
 
-type resourceRepoImpl struct {
-	db *gorm.DB
-}
+type resourceRepoImpl struct{}
 
 func NewResourceRepo(db *gorm.DB) resourceRepo {
-	return &resourceRepoImpl{db: db}
+	return &resourceRepoImpl{}
 }
 
-func (r *resourceRepoImpl) findAllByCreatedBy(ctx context.Context, page dto.Pageable, createdBy uint) (dto.Slice[resource], error) {
-	query := gorm.G[resource](r.db).Where("created_by = ?", createdBy).Limit(page.GetLimit() + 1).Offset(page.GetOffset())
+func (r *resourceRepoImpl) findByIdAndCreatedBy(ctx context.Context, tx *gorm.DB, id uint, createdBy uint) (*resource, error) {
+	ent, err := gorm.G[resource](tx).Where("id = ?", id).Where("created_by = ?", createdBy).First(ctx)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &ent, nil
+}
+
+func (r *resourceRepoImpl) findAllByCreatedBy(ctx context.Context, tx *gorm.DB, page dto.Pageable, createdBy uint) (dto.Slice[resource], error) {
+	query := gorm.G[resource](tx).Where("created_by = ?", createdBy).Limit(page.GetLimit() + 1).Offset(page.GetOffset())
 
 	for _, sort := range page.Sort {
 		orderClause := fmt.Sprintf("%s %s", sort.Property, sort.Direction)
@@ -40,35 +50,23 @@ func (r *resourceRepoImpl) findAllByCreatedBy(ctx context.Context, page dto.Page
 	return *dto.NewSlice(ents, &page, len(ents)), nil
 }
 
-func (r *resourceRepoImpl) findByIdAndCreatedBy(ctx context.Context, id uint, createdBy uint) (*resource, error) {
-	ent, err := gorm.G[resource](r.db).Where("id = ?", id).Where("created_by = ?", createdBy).First(ctx)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, err
-	}
-
-	return &ent, nil
-}
-
-func (r *resourceRepoImpl) save(ctx context.Context, ent *resource) (*resource, error) {
+func (r *resourceRepoImpl) save(ctx context.Context, tx *gorm.DB, ent *resource) error {
 	if ent.ID == 0 {
-		return ent, gorm.G[resource](r.db).Create(ctx, ent)
+		return gorm.G[resource](tx).Create(ctx, ent)
 	}
 
-	rowsAffected, err := gorm.G[resource](r.db).Where("id = ?", ent.ID).Select("*").Updates(ctx, *ent)
+	rowsAffected, err := gorm.G[resource](tx).Where("id = ?", ent.ID).Select("*").Updates(ctx, *ent)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if rowsAffected == 0 {
-		return nil, ErrOptimisticLockFailure
+		return ErrOptimisticLockFailure
 	}
 
-	return ent, nil
+	return nil
 }
 
-func (r *resourceRepoImpl) delete(ctx context.Context, ent *resource) error {
-	_, err := gorm.G[resource](r.db).Where("id = ?", ent.ID).Delete(ctx)
+func (r *resourceRepoImpl) delete(ctx context.Context, tx *gorm.DB, ent *resource) error {
+	_, err := gorm.G[resource](tx).Where("id = ?", ent.ID).Delete(ctx)
 	return err
 }
