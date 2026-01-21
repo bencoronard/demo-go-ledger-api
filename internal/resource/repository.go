@@ -35,7 +35,7 @@ func (r *resourceRepoImpl) findByIdAndCreatedBy(ctx context.Context, tx *gorm.DB
 }
 
 func (r *resourceRepoImpl) findAllByCreatedBy(ctx context.Context, tx *gorm.DB, page dto.Pageable, createdBy uint) (dto.Slice[resource], error) {
-	query := gorm.G[resource](tx).Where("created_by = ?", createdBy).Limit(page.GetLimit() + 1).Offset(page.GetOffset())
+	query := gorm.G[resource](tx).Where("created_by = ?", createdBy).Limit(page.Limit() + 1).Offset(page.Offset())
 
 	for _, sort := range page.Sort {
 		orderClause := fmt.Sprintf("%s %s", sort.Property, sort.Direction)
