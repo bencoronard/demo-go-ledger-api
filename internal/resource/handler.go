@@ -52,7 +52,7 @@ func (h *ResourceHandler) CreateResource(c echo.Context) error {
 		return err
 	}
 
-	id, err := h.s.createResource(c.Request().Context(), nil, claims)
+	id, err := h.s.createResource(c.Request().Context(), resource{}, claims)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (h *ResourceHandler) UpdateResource(c echo.Context) error {
 		return err
 	}
 
-	if err := h.s.updateResource(c.Request().Context(), 0, nil, claims); err != nil {
+	if err := h.s.updateResource(c.Request().Context(), 0, resource{}, claims); err != nil {
 		return err
 	}
 
