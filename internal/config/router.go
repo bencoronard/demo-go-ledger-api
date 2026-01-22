@@ -50,8 +50,8 @@ func (r *router) RegisterMiddlewares() {
 
 func (r *router) RegisterRoutes() {
 	api := r.e.Group("/api")
-	api.GET("/resources", r.h.ListResources)
 	api.GET("/resources/:id", r.h.RetrieveResource)
+	api.GET("/resources", r.h.ListResources)
 	api.POST("/resources", r.h.CreateResource)
 	api.PUT("/resources/:id", r.h.UpdateResource)
 	api.DELETE("/resources/:id", r.h.DeleteResource)
