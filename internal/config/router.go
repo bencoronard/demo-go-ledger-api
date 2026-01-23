@@ -48,12 +48,12 @@ func (r *router) RegisterMiddlewares() {
 }
 
 func (r *router) RegisterRoutes() {
-	api := r.e.Group("/api", middleware.RequestLogger())
-	api.GET("/resources/:id", r.h.RetrieveResource)
-	api.GET("/resources", r.h.ListResources)
-	api.POST("/resources", r.h.CreateResource)
-	api.PUT("/resources/:id", r.h.UpdateResource)
-	api.DELETE("/resources/:id", r.h.DeleteResource)
+	api := r.e.Group("/api/resources", middleware.RequestLogger())
+	api.GET("/:id", r.h.RetrieveResource)
+	api.GET("", r.h.ListResources)
+	api.POST("", r.h.CreateResource)
+	api.PUT("/:id", r.h.UpdateResource)
+	api.DELETE("/:id", r.h.DeleteResource)
 
 	act := r.e.Group("/actuator")
 	act.GET("/health", func(c echo.Context) error { return c.JSON(http.StatusOK, map[string]string{"status": "up"}) })
