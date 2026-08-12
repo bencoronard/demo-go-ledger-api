@@ -5,3 +5,5 @@ build/
 
 ### Sensitive files ###
 .env
+
+v2/
